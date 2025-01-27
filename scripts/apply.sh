@@ -1,9 +1,14 @@
 #!/bin/bash
-ENVIRONMENT=$1
-if [[ -z "$ENVIRONMENT" ]]; then
-  echo "Usage: $0 <environment>"
+PROVIDER=$1
+ENVIRONMENT=$2
+
+if [[ $PROVIDER == "aws" ]]; then
+  cd environments/aws/$ENVIRONMENT
+elif [[ $PROVIDER == "ibmc" ]]; then
+  cd environments/ibmc/$ENVIRONMENT
+else
+  echo "Unknown provider: $PROVIDER"
   exit 1
 fi
 
-cd environments/$ENVIRONMENT || exit
-terraform apply tfplan
+terraform apply -var-file=terraform.tfvars
