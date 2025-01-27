@@ -18,3 +18,28 @@ resource "ibm_is_public_gateway" "public_gateways" {
   vpc    = ibm_is_vpc.main.id
   zone   = var.subnets[count.index].zone
 }
+
+resource "ibm_is_security_group" "security_groups" {
+  count = length(var.security_groups)
+  name  = var.security_groups[count.index].name
+  vpc   = ibm_is_vpc.main.id
+
+  dynamic "rule" {
+    for_each = var.security_groups[count.index].rules
+    content {
+      direction = rule.value.direction
+      protocol  = rule.value.protocol
+      port_min  = rule.value.port_min
+      port_max  = rule.value.port_max
+      remote    = rule.value.remote
+    }
+  }
+}
+
+resource "ibm_is_lb" "load_balancers" {
+  count    = length(var.load_balancers)
+  name     = var.load_balancers[count.index].name
+  subnets  = var.load_balancers[count.index].subnets
+  type     = var.load_balancers[count.index].type
+  vpc      = ibm_is_vpc.main.id
+}

@@ -8,12 +8,11 @@ module "vpc" {
 }
 
 module "compute" {
-  source               = "../../modules/compute-ibmc"
-  name                 = var.name
-  resource_group       = var.resource_group
-  environment          = "prod"
-  image                = var.image
-  profile              = var.profile
-  instance_count       = var.instance_count
-  zone                 = var.zone
+  source     = "../../modules/compute-ibmc"
+  instances  = var.instances
+}
+
+module "databases" {
+  source    = "../../modules/ibmc/databases"
+  databases = var.databases
 }
